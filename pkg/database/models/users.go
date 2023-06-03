@@ -16,11 +16,22 @@
 
 package models
 
+import "github.com/adh-partnership/api/pkg/database"
+
 type User struct {
-	ID        int64   `json:"id"`
-	CID       int64   `json:"cid"`
-	FirstName string  `json:"first_name"`
-	LastName  string  `json:"last_name"`
-	Email     string  `json:"email"`
-	Roles     []*Role `json:"roles"`
+	ID        int64  `json:"id"`
+	CID       uint   `json:"cid"`
+	FirstName string `json:"first_name"`
+	LastName  string `json:"last_name"`
+	Email     string `json:"email"`
+	Roles     string `json:"roles"`
+}
+
+func FindUser(cid interface{}) (*User, error) {
+	var user User
+	if err := database.DB.Where("cid = ?", cid).First(&user).Error; err != nil {
+		return nil, err
+	}
+
+	return &user, nil
 }

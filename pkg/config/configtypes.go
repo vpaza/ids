@@ -25,7 +25,8 @@ type Config struct {
 }
 
 type ConfigFacility struct {
-	Name string `json:"name"`
+	Identifier string `json:"identifier"`
+	Name       string `json:"name"`
 }
 
 type ConfigDatabase struct {
@@ -45,6 +46,7 @@ type ConfigOAuth struct {
 	MyBaseURL         string `json:"my_base_url"`
 	EndpointAuthorize string `json:"endpoint_authorize"`
 	EndpointToken     string `json:"endpoint_token"`
+	EndpointUserInfo  string `json:"endpoint_user_info"`
 }
 
 type ConfigServer struct {

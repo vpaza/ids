@@ -20,8 +20,11 @@ import (
 	"github.com/adh-partnership/api/pkg/database"
 	"github.com/adh-partnership/api/pkg/logger"
 	"github.com/urfave/cli/v2"
+
+	"github.com/vpaza/ids/internal/middleware"
 	"github.com/vpaza/ids/pkg/config"
 	"github.com/vpaza/ids/pkg/database/models"
+	"github.com/vpaza/ids/pkg/jobs"
 	"github.com/vpaza/ids/pkg/oauth"
 	"github.com/vpaza/ids/pkg/server"
 )
@@ -54,6 +57,9 @@ func newServerCommand() *cli.Command {
 			log.Infof("Building web server...")
 			srvr := server.NewServer()
 
+			log.Infof("Setting up logger")
+			srvr.E.Use(middleware.Logger())
+
 			log.Infof("Building database connection...")
 			err = database.Connect(database.DBOptions{
 				Host:     config.Cfg.Database.Host,
@@ -69,10 +75,9 @@ func newServerCommand() *cli.Command {
 				return err
 			}
 
-			log.Infof("Running migrations")
+			log.Infof("Running migrations...")
 			err = database.DB.AutoMigrate(
 				&models.User{},
-				&models.Role{},
 				&models.PIREP{},
 				&models.Airport{},
 				&models.Facility{},
@@ -85,6 +90,16 @@ func newServerCommand() *cli.Command {
 			oauth.BuildWithConfig(config.Cfg)
 
 			log.Infof("Building routes...")
+			srvr.BuildRoutes()
+
+			log.Infof("Building jobs...")
+			jobs.BuildJobs()
+
+			log.Infof("Starting jobs async...")
+			jobs.Start()
+
+			log.Infof("Starting web server...")
+			srvr.Start()
 
 			return nil
 		},

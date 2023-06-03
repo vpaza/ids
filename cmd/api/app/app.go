@@ -16,7 +16,12 @@
 
 package app
 
-import "github.com/urfave/cli/v2"
+import (
+	"errors"
+
+	"github.com/adh-partnership/api/pkg/logger"
+	"github.com/urfave/cli/v2"
+)
 
 func NewRootCommand() *cli.App {
 	return &cli.App{
@@ -42,6 +47,19 @@ func NewRootCommand() *cli.App {
 			},
 		},
 		Before: func(c *cli.Context) error {
+			format := c.String("log-format")
+			if !logger.IsValidFormat(format) {
+				return errors.New("invalid log format")
+			}
+			logger.NewLogger(format)
+
+			if !logger.IsValidLogLevel(c.String("log-level")) {
+				return errors.New("invalid log level")
+			}
+
+			l, _ := logger.ParseLogLevel(c.String("log-level"))
+			logger.Logger.SetLevel(l)
+
 			return nil
 		},
 	}

@@ -10,4 +10,8 @@ default:
 shell:
 	@$(RUN) /bin/bash
 
+local-run:
+	@$(MAKE_CONTAINER) build
+	
+
 .PHONY: default shell

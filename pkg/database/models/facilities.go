@@ -17,8 +17,8 @@
 package models
 
 type Facility struct {
-	ID       int64      `json:"id"`
-	Name     string     `json:"name"`
-	Type     string     `json:"type"`
-	Airports []*Airport `json:"airports"`
+	ID       int64  `json:"id"`
+	Name     string `json:"name"`
+	Type     string `json:"type"`
+	Airports string `json:"airports"`
 }

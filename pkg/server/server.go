@@ -29,11 +29,11 @@ import (
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
 	echoLog "github.com/labstack/gommon/log"
-	logMiddleware "github.com/neko-neko/echo-logrus/v2"
-	"github.com/neko-neko/echo-logrus/v2/log"
-	"github.com/sirupsen/logrus"
 	"golang.org/x/net/http2"
 
+	"github.com/vpaza/ids/internal/binding"
+	internalmiddleware "github.com/vpaza/ids/internal/middleware"
+	"github.com/vpaza/ids/internal/v1/router"
 	"github.com/vpaza/ids/pkg/config"
 )
 
@@ -44,14 +44,9 @@ type Server struct {
 func NewServer() *Server {
 	e := echo.New()
 
-	log.Logger().SetOutput(os.Stdout)
-	log.Logger().SetLevel(echoLog.INFO)
-	log.Logger().SetFormatter(&logrus.JSONFormatter{
-		TimestampFormat: time.RFC3339,
-	})
+	e.Binder = &binding.CustomBinder{}
 
-	e.Logger = log.Logger()
-	e.Use(logMiddleware.Logger())
+	e.HideBanner = true
 
 	generateSecureMiddleware(e)
 
@@ -61,11 +56,12 @@ func NewServer() *Server {
 		AllowCredentials: true,
 	}))
 
-	e.Use(middleware.CSRF())
 	e.Pre(middleware.MethodOverride())
 	e.Pre(middleware.RemoveTrailingSlash())
 
 	e.Use(session.Middleware(sessions.NewCookieStore([]byte(config.Cfg.Session.Secret))))
+	e.Use(internalmiddleware.UpdateCookie)
+	e.Use(internalmiddleware.Auth)
 
 	e.Use(middleware.RecoverWithConfig(middleware.RecoverConfig{
 		StackSize: 1 << 10, // 1 KB
@@ -93,6 +89,10 @@ func (s *Server) handleStart(host string) error {
 	default:
 		return fmt.Errorf("invalid server mode: %s", config.Cfg.Server.Mode)
 	}
+}
+
+func (s *Server) BuildRoutes() {
+	router.SetupRoutes(s.E)
 }
 
 func (s *Server) Start() {

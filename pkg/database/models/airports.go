@@ -16,16 +16,62 @@
 
 package models
 
-import "time"
+import (
+	"time"
+
+	"github.com/adh-partnership/api/pkg/database"
+	"github.com/adh-partnership/api/pkg/logger"
+	"gorm.io/gorm"
+)
+
+var log = logger.Logger.WithField("component", "models/airports")
 
 type Airport struct {
 	ID               int64      `json:"id"`
-	FAAID            string     `json:"faa_id"`
-	ICAOID           string     `json:"icao_id"`
+	FAAID            string     `json:"faa_id" gorm:"unique"`
+	ICAOID           string     `json:"icao_id" gorm:"unique"`
 	ATIS             string     `json:"atis"`
 	ATISTime         *time.Time `json:"atis_time"`
 	DepartureRunways string     `json:"departure_runways"`
 	ArrivalRunways   string     `json:"arrival_runways"`
 	METAR            string     `json:"metar"`
 	TAF              string     `json:"taf"`
+	ParentFacility   int64      `json:"parent_facility"`
+}
+
+func GetAirportByICAO(icao string) (*Airport, error) {
+	var a Airport
+
+	if err := database.DB.Where("icao_id = ?", icao).First(&a).Error; err != nil {
+		return nil, err
+	}
+
+	return &a, nil
+}
+
+func GetAirportByFAAID(id string) (*Airport, error) {
+	var a Airport
+
+	if err := database.DB.Where("faa_id = ?", id).First(&a).Error; err != nil {
+		return nil, err
+	}
+
+	return &a, nil
+}
+
+func GetAirport(id string) (*Airport, error) {
+	a, err := GetAirportByICAO(id)
+	log.Infof("GetAirportByICAO: %v, %v", a, err)
+	if err != nil && err != gorm.ErrRecordNotFound {
+		return nil, err
+	}
+
+	if a == nil {
+		a, err = GetAirportByFAAID(id)
+		if err != nil && err != gorm.ErrRecordNotFound {
+			return nil, err
+		}
+	}
+
+	return a, nil
 }
