@@ -17,7 +17,7 @@ github.com/cpuguy83/go-md2man/v2/md2man
 # github.com/dgryski/go-rendezvous v0.0.0-20200823014737-9f7001d12a5f
 ## explicit
 github.com/dgryski/go-rendezvous
-# github.com/go-co-op/gocron v1.28.0
+# github.com/go-co-op/gocron v1.28.2
 ## explicit; go 1.16
 github.com/go-co-op/gocron
 # github.com/go-redis/redis/v8 v8.11.5

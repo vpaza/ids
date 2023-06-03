@@ -4,18 +4,23 @@ go 1.20
 
 require (
 	github.com/adh-partnership/api v0.0.0-20230525032228-41b125ea2e6e
-	github.com/go-co-op/gocron v1.28.0
+	github.com/go-co-op/gocron v1.28.2
 	github.com/gorilla/sessions v1.2.1
 	github.com/labstack/echo-contrib v0.15.0
 	github.com/labstack/echo/v4 v4.10.2
 	github.com/labstack/gommon v0.4.0
-	github.com/neko-neko/echo-logrus/v2 v2.0.2
+	github.com/neko-neko/echo-logrus/v2 v2.0.2 // indirect
 	github.com/sirupsen/logrus v1.9.2
 	github.com/urfave/cli/v2 v2.25.5
 	golang.org/x/net v0.10.0
 	golang.org/x/oauth2 v0.8.0
-	gorm.io/gorm v1.25.1 // indirect
+	gorm.io/gorm v1.25.1
 	sigs.k8s.io/yaml v1.3.0
+)
+
+require (
+	github.com/matoous/go-nanoid/v2 v2.0.0
+	gopkg.in/yaml.v2 v2.4.0
 )
 
 require (
@@ -33,7 +38,6 @@ require (
 	github.com/imdario/mergo v0.3.16 // indirect
 	github.com/jinzhu/inflection v1.0.0 // indirect
 	github.com/jinzhu/now v1.1.5 // indirect
-	github.com/matoous/go-nanoid/v2 v2.0.0 // indirect
 	github.com/mattn/go-colorable v0.1.13 // indirect
 	github.com/mattn/go-isatty v0.0.19 // indirect
 	github.com/robfig/cron/v3 v3.0.1 // indirect
@@ -48,6 +52,5 @@ require (
 	golang.org/x/time v0.3.0 // indirect
 	google.golang.org/appengine v1.6.7 // indirect
 	google.golang.org/protobuf v1.30.0 // indirect
-	gopkg.in/yaml.v2 v2.4.0 // indirect
 	gorm.io/driver/mysql v1.5.1 // indirect
 )
