@@ -17,6 +17,7 @@
 package models
 
 import (
+	"strings"
 	"time"
 
 	"github.com/adh-partnership/api/pkg/database"
@@ -74,4 +75,22 @@ func GetAirport(id string) (*Airport, error) {
 	}
 
 	return a, nil
+}
+
+func GetAirports(list string) ([]*Airport, error) {
+	var airports []*Airport
+
+	if list == "all" || list == "" {
+		if err := database.DB.Find(&airports).Error; err != nil {
+			return nil, err
+		}
+
+		return airports, nil
+	}
+
+	if err := database.DB.Where("icao_id IN ?", strings.Split(list, ",")).Or("faa_id IN ?", strings.Split(list, ",")).Find(&airports).Error; err != nil {
+		return nil, err
+	}
+
+	return airports, nil
 }

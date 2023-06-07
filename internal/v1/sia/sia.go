@@ -18,6 +18,7 @@ package sia
 
 import (
 	"net/http"
+	"strings"
 	"time"
 
 	"github.com/adh-partnership/api/pkg/database"
@@ -32,6 +33,7 @@ type SIADTO struct {
 	ATISTime         *time.Time `json:"atis_time"`
 	DepartureRunways string     `json:"departure_runways"`
 	ArrivalRunways   string     `json:"arrival_runways"`
+	METAR            string     `json:"metar"`
 }
 
 func getSIA(e echo.Context) error {
@@ -45,6 +47,29 @@ func getSIA(e echo.Context) error {
 	}
 
 	return response.Respond(e, http.StatusOK, a)
+}
+
+func getSIABulk(e echo.Context) error {
+	airports, err := models.GetAirports(strings.ReplaceAll(e.Param("airports"), " ", ""))
+	if err != nil {
+		return response.RespondError(e, http.StatusInternalServerError, err)
+	}
+
+	ret := map[string]*SIADTO{}
+
+	for _, a := range airports {
+		if a != nil {
+			ret[a.FAAID] = &SIADTO{
+				ATIS:             a.ATIS,
+				ATISTime:         a.ATISTime,
+				DepartureRunways: a.DepartureRunways,
+				ArrivalRunways:   a.ArrivalRunways,
+				METAR:            a.METAR,
+			}
+		}
+	}
+
+	return response.Respond(e, http.StatusOK, ret)
 }
 
 func patchSIA(e echo.Context) error {

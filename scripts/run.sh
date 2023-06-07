@@ -14,7 +14,9 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-set -e
+set -ex
+
+echo "$MISC_OPTIONS"
 
 SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
 
@@ -47,6 +49,8 @@ read -ra DOCKER_RUN_OPTIONS <<< "${DOCKER_RUN_OPTIONS:-}"
 [[ -t 1 ]] && DOCKER_RUN_OPTIONS+=("-it")
 [[ ${UID} -ne 0 ]] && DOCKER_RUN_OPTIONS+=(-u "${UID}:${DOCKER_GID}")
 
+MISC_OPTIONS="${MISC_OPTIONS:-}"
+
 # shellcheck disable=SC2086
 docker run \
     --rm \
@@ -55,6 +59,7 @@ docker run \
     --sig-proxy=true \
     ${DOCKER_SOCKET_MOUNT:--v /var/run/docker.sock:/var/run/docker.sock} \
     $CONTAINER_OPTIONS \
+    $MISC_OPTIONS \
     -e IN_BUILD_CONTAINER=1 \
     -e TZ="${TIMEZONE:-$TZ}" \
     --mount "type=bind,source=${MOUNT_SOURCE},destination=/work" \

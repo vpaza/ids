@@ -24,5 +24,6 @@ import (
 
 func Routes(e *echo.Group) {
 	e.GET("/:airport", getSIA)
+	e.GET("/bulk/:list", getSIABulk)
 	e.PATCH("/:airport", patchSIA, middleware.NotGuest)
 }

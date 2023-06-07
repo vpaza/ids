@@ -33,3 +33,7 @@ build:
 .PHONY: mod-vendor
 mod-vendor:
 	@go mod vendor
+
+.PHONY: dev
+dev:
+	@go run ./cmd/api/main.go server

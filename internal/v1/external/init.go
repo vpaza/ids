@@ -14,20 +14,10 @@
  *  limitations under the License.
  */
 
-package utils
+package external
 
-import "time"
+import "github.com/labstack/echo/v4"
 
-func Contains[T comparable](s []T, e T) bool {
-	for _, v := range s {
-		if v == e {
-			return true
-		}
-	}
-	return false
-}
-
-func Now() *time.Time {
-	t := time.Now()
-	return &t
+func Routes(e *echo.Group) {
+	e.POST("/vatis", postvATIS)
 }
