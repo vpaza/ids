@@ -17,15 +17,12 @@
 package middleware
 
 import (
-	"github.com/adh-partnership/api/pkg/logger"
 	"github.com/labstack/echo-contrib/session"
 	"github.com/labstack/echo/v4"
 
 	"github.com/vpaza/ids/internal/response"
 	"github.com/vpaza/ids/pkg/database/models"
 )
-
-var log = logger.Logger.WithField("component", "middleware/auth")
 
 func Auth(next echo.HandlerFunc) echo.HandlerFunc {
 	return func(c echo.Context) error {
@@ -55,7 +52,6 @@ func Auth(next echo.HandlerFunc) echo.HandlerFunc {
 
 func NotGuest(next echo.HandlerFunc) echo.HandlerFunc {
 	return func(c echo.Context) error {
-		log.Infof("Got NotGuest middleware=%v", c.Get("x-guest"))
 		if c.Get("x-guest").(bool) {
 			return response.RespondMessage(c, 401, "Unauthenticated")
 		}

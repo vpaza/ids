@@ -51,7 +51,9 @@ func NewServer() *Server {
 	generateSecureMiddleware(e)
 
 	e.Use(middleware.CORSWithConfig(middleware.CORSConfig{
-		AllowOrigins:     []string{"*"},
+		AllowOriginFunc: func(origin string) (bool, error) {
+			return true, nil
+		},
 		AllowHeaders:     []string{echo.HeaderOrigin, echo.HeaderContentType, echo.HeaderAccept},
 		AllowCredentials: true,
 	}))

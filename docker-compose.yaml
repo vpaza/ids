@@ -1,0 +1,61 @@
+version: '3'
+
+services:
+  db:
+    image: mysql:8.0
+    container_name: db
+    tty: true
+    restart: unless-stopped
+    ports:
+      - "3306:3306"
+    environment:
+      MYSQL_DATABASE: ids
+      MYSQL_ROOT_PASSWORD: ids
+      MYSQL_USER: ids
+      MYSQL_PASSWORD: ids
+    networks:
+      - ids
+  api:
+    image: adhp/build-tools:main-latest
+    container_name: api
+    depends_on:
+      - db
+    tty: true
+    restart: unless-stopped
+    ports:
+      - "3000:3000"
+    volumes:
+      - .:/work
+    command: bash -c 'cd /work && go run cmd/api/main.go server'
+    networks:
+      - ids
+  web:
+    image: adhp/build-tools:main-latest
+    container_name: web
+    depends_on:
+      - db
+    tty: true
+    restart: unless-stopped
+    ports:
+      - "8080:8080"
+    volumes:
+      - ./frontend:/work
+    command: bash -c 'cd /work && bash -c "yarn && npx vite --clearScreen=false --host 0.0.0.0 --port 8080"'
+    networks:
+      - ids
+  bootstrap:
+    depends_on:
+      - db
+    image: adhp/build-tools:main-latest
+    container_name: bootstrap
+    tty: true
+    restart: no
+    volumes:
+      - .:/work
+    command: bash -c 'cd /work && go run tools/bootstrap/main.go'
+    networks:
+      - ids
+
+networks:
+  ids:
+    driver: bridge

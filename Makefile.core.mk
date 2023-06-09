@@ -1,4 +1,4 @@
-FINDFILES=find . \( -path ./.git -o -path ./out -o -path ./.github -o -path ./vendor \) -prune -o -type f
+FINDFILES=find . \( -path ./.git -o -path ./out -o -path ./.github -o -path ./vendor -o -path ./frontend/node_modules \) -prune -o -type f
 XARGS=xargs -0 -r
 RELEASE_LDFLAGS='-extldflags -static -s -w'
 BINARIES=./cmd/api
@@ -37,3 +37,13 @@ mod-vendor:
 .PHONY: dev
 dev:
 	@go run ./cmd/api/main.go server
+
+.PHONY: clean
+clean:
+	@rm -rf out
+	@rm -rf frontend/dist
+
+.PHONY: dist-clean
+dist-clean: clean
+	@rm -rf vendor
+	@rm -rf frontend/node_modules

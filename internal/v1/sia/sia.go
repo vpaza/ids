@@ -22,6 +22,7 @@ import (
 	"time"
 
 	"github.com/adh-partnership/api/pkg/database"
+	"github.com/adh-partnership/api/pkg/logger"
 	"github.com/labstack/echo/v4"
 
 	"github.com/vpaza/ids/internal/response"
@@ -35,6 +36,8 @@ type SIADTO struct {
 	ArrivalRunways   string     `json:"arrival_runways"`
 	METAR            string     `json:"metar"`
 }
+
+var log = logger.Logger.WithField("component", "sia")
 
 func getSIA(e echo.Context) error {
 	a, err := models.GetAirport(e.Param("airport"))
@@ -87,22 +90,26 @@ func patchSIA(e echo.Context) error {
 	}
 
 	if s.ATIS != "" {
+		log.Infof("Updating ATIS for %s", a.FAAID)
 		a.ATIS = s.ATIS
 		n := time.Now()
 		a.ATISTime = &n
 	}
 
 	if s.DepartureRunways != "" {
+		log.Infof("Updating Departure Runways for %s", a.FAAID)
 		a.DepartureRunways = s.DepartureRunways
 	}
 
 	if s.ArrivalRunways != "" {
+		log.Infof("Updating Arrival Runways for %s", a.FAAID)
 		a.ArrivalRunways = s.ArrivalRunways
 	}
 
 	if err := database.DB.Save(a).Error; err != nil {
 		return response.RespondError(e, http.StatusInternalServerError, err)
 	}
+	log.Infof("Updated SIA for %s", a.FAAID)
 
-	return response.RespondBlank(e, http.StatusNotImplemented)
+	return response.RespondBlank(e, http.StatusNoContent)
 }

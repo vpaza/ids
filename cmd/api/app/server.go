@@ -80,7 +80,6 @@ func newServerCommand() *cli.Command {
 				&models.User{},
 				&models.PIREP{},
 				&models.Airport{},
-				&models.Facility{},
 			)
 			if err != nil {
 				return err

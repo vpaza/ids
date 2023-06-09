@@ -21,11 +21,8 @@ import (
 	"time"
 
 	"github.com/adh-partnership/api/pkg/database"
-	"github.com/adh-partnership/api/pkg/logger"
 	"gorm.io/gorm"
 )
-
-var log = logger.Logger.WithField("component", "models/airports")
 
 type Airport struct {
 	ID               int64      `json:"id"`
@@ -37,6 +34,7 @@ type Airport struct {
 	ArrivalRunways   string     `json:"arrival_runways"`
 	METAR            string     `json:"metar"`
 	TAF              string     `json:"taf"`
+	MagVar           int        `json:"mag_var"`
 	ParentFacility   int64      `json:"parent_facility"`
 }
 
@@ -62,7 +60,6 @@ func GetAirportByFAAID(id string) (*Airport, error) {
 
 func GetAirport(id string) (*Airport, error) {
 	a, err := GetAirportByICAO(id)
-	log.Infof("GetAirportByICAO: %v, %v", a, err)
 	if err != nil && err != gorm.ErrRecordNotFound {
 		return nil, err
 	}

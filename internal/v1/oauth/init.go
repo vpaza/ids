@@ -27,7 +27,9 @@ import (
 	"github.com/labstack/echo-contrib/session"
 	"github.com/labstack/echo/v4"
 	gonanoid "github.com/matoous/go-nanoid/v2"
+	"gorm.io/gorm"
 
+	"github.com/vpaza/ids/internal/middleware"
 	"github.com/vpaza/ids/internal/response"
 	"github.com/vpaza/ids/pkg/config"
 	"github.com/vpaza/ids/pkg/database/models"
@@ -46,10 +48,11 @@ type SSOUserInfoResponse struct {
 	} `json:"user"`
 }
 
-func SetupRoutes(g *echo.Group) {
+func Routes(g *echo.Group) {
 	g.GET("/callback", getCallback)
 	g.GET("/login", getLogin)
 	g.GET("/logout", getLogout)
+	g.GET("/user", getUser, middleware.NotGuest)
 }
 
 func getCallback(e echo.Context) error {
@@ -69,12 +72,14 @@ func getCallback(e echo.Context) error {
 	res.Header.Add("Accept", "application/json")
 	res.Header.Add("User-Agent", "adh-partnership-api")
 	if err != nil {
+		log.Errorf("Error creating request: %v", err)
 		return response.RespondMessage(e, http.StatusInternalServerError, "Internal Server Error")
 	}
 
 	client := &http.Client{}
 	resp, err := client.Do(res)
 	if err != nil {
+		log.Errorf("Error getting user info: %v", err)
 		return response.RespondMessage(e, http.StatusInternalServerError, "Internal Server Error")
 	}
 
@@ -84,6 +89,7 @@ func getCallback(e echo.Context) error {
 
 	contents, err := io.ReadAll(resp.Body)
 	if err != nil {
+		log.Errorf("Error reading response body: %v", err)
 		return response.RespondMessage(e, http.StatusInternalServerError, "Internal Server Error")
 	}
 
@@ -93,13 +99,17 @@ func getCallback(e echo.Context) error {
 
 	}
 
+	log.Infof("User info: %s", string(contents))
+
 	user := &SSOUserInfoResponse{}
 	if err := json.Unmarshal(contents, &user); err != nil {
+		log.Errorf("Error unmarshalling response body: %v", err)
 		return response.RespondMessage(e, http.StatusInternalServerError, "Internal Server Error")
 	}
 
 	u, err := models.FindUser(user.User.CID)
-	if err != nil {
+	if err != nil && err != gorm.ErrRecordNotFound {
+		log.Errorf("Error finding user: %v", err)
 		return response.RespondMessage(e, http.StatusInternalServerError, "Internal Server Error")
 	}
 
@@ -110,7 +120,8 @@ func getCallback(e echo.Context) error {
 			LastName:  user.User.LastName,
 			Email:     user.User.Email,
 		}
-		if err := database.DB.Create(&u); err != nil {
+		if err := database.DB.Create(&u).Error; err != nil {
+			log.Errorf("Error creating user: %v", err)
 			return response.RespondMessage(e, http.StatusInternalServerError, "Internal Server Error")
 		}
 	}
@@ -130,6 +141,11 @@ func getCallback(e echo.Context) error {
 func getLogin(e echo.Context) error {
 	state, _ := gonanoid.Generate("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789", 64)
 	sess, _ := session.Get("session", e)
+
+	if e.QueryParam("redirect") != "" {
+		sess.Values["redirect"] = e.QueryParam("redirect")
+	}
+
 	sess.Values["state"] = state
 	_ = sess.Save(e.Request(), e.Response())
 
@@ -145,4 +161,19 @@ func getLogout(e echo.Context) error {
 	_ = sess.Save(e.Request(), e.Response())
 
 	return response.RespondBlank(e, http.StatusNoContent)
+}
+
+func getUser(e echo.Context) error {
+	sess, _ := session.Get("session", e)
+	cid := sess.Values["cid"]
+	if cid == nil {
+		return response.RespondMessage(e, http.StatusUnauthorized, "Unauthorized")
+	}
+
+	u, err := models.FindUser(cid.(uint))
+	if err != nil {
+		return response.RespondMessage(e, http.StatusInternalServerError, "Invalid")
+	}
+
+	return response.Respond(e, http.StatusOK, u)
 }

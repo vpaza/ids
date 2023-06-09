@@ -1,0 +1,110 @@
+{
+  "facility": {
+    "id": "ZAN",
+    "color": "#002766",
+    "idscolor": "#ffb612",
+    "defaultView": "Anchorage ATCT",
+    "api": "https://ids-api.hawton.haus:3000",
+    "update_flash_duration": 16
+  },
+  "timezone": {
+    "name": "America/Anchorage",
+    "offset": -9,
+    "dst": -8
+  },
+  "views": [
+    { "name": "Allen AAF ATCT", "facilities": ["BIG"], "sops": "https://sops.zanartcc.org" },
+    { "name": "Anchorage ATCT", "facilities": ["ANC"], "sops": "https://sops.zanartcc.org" },
+    { "name": "Bethel ATCT", "facilities": ["BET"], "sops": "https://sops.zanartcc.org" },
+    { "name": "Eielson AFB ATCT", "facilities": ["EIL"], "sops": "https://sops.zanartcc.org" },
+    { "name": "Fairbanks ATCT", "facilities": ["FAI"], "sops": "https://sops.zanartcc.org" },
+    { "name": "Juneau ATCT", "facilities": ["JNU"], "sops": "https://sops.zanartcc.org" },
+    { "name": "Kenai ATCT", "facilities": ["ENA"], "sops": "https://sops.zanartcc.org" },
+    { "name": "King Salmon ATCT", "facilities": ["AKN"], "sops": "https://sops.zanartcc.org" },
+    { "name": "Kodiak ATCT", "facilities": ["ADQ"], "sops": "https://sops.zanartcc.org" },
+    { "name": "Ladd AAF ATCT", "facilities": ["FBK"], "sops": "https://sops.zanartcc.org" },
+    { "name": "Lake Hood ATCT", "facilities": ["LHD"], "sops": "https://sops.zanartcc.org" },
+    { "name": "Merrill Field ATCT", "facilities": ["MRI"], "sops": "https://sops.zanartcc.org" },
+    { "name": "Fairbanks TRACON", "facilities": ["FAI", "FBK", "EIL"], "sops": "https://sops.zanartcc.org" },
+    { "name": "Anchorage TRACON", "facilities": ["ANC", "LHD", "MRI", "EDF"], "sops": "https://sops.zanartcc.org" },
+    { "name": "ZAN North Area", "facilities": ["FAI", "AKN", "BET", "FBK", "EIL", "BIG"], "sops": "https://sops.zanartcc.org" },
+    { "name": "ZAN South Area", "facilities": ["ANC", "JNU", "ADQ", "ENA", "MRI", "EDF"], "sops": "https://sops.zanartcc.org" }
+  ],
+  "airports": [
+    { "name": "ANC", "hours": { "continuous": true } },
+    {
+      "name": "ADQ", "hours": {
+        "continuous": false, "schedule": [
+          { "start": { "month": 4, "day": 1 }, "end": { "month": 9, "day": 30 }, "open": "07:00", "close": "22:00", "local": true },
+          { "start": { "month": 10, "day": 1 }, "end": { "month": 3, "day": 31 }, "open": "06:30", "close": "20:00", "local": true }
+        ]
+      }
+    },
+    {
+      "name": "AKN", "hours": {
+        "continuous": false, "schedule": [
+          { "start": { "month": 8, "day": 1 }, "end": { "month": 6, "day": 14 }, "open": "08:00", "close": "20:00", "local": true },
+          { "start": { "month": 6, "day": 15 }, "end": { "month": 7, "day": 31 }, "open": "08:00", "close": "22:00", "local": true }
+        ]
+      }
+    },
+    {
+      "name": "BET", "hours": {
+        "continuous": false, "schedule": [
+          { "start": { "month": 4, "day": 1 }, "end": { "month": 10, "day": 31 }, "open": "07:00", "close": "22:00", "local": true },
+          { "start": { "month": 11, "day": 1 }, "end": { "month": 3, "day": 31 }, "open": "07:00", "close": "20:00", "local": true }
+        ]
+      }
+    },
+    {
+      "name": "BIG", "hours": {
+        "continuous": false, "schedule": [
+          { "whenDST": true, "open": "16:15", "close": "00:00", "days": [1, 2, 3, 4, 5], "local": false },
+          { "whenDST": false, "open": "17:15", "close": "01:00", "days": [1, 2, 3, 4, 5], "local": false }
+        ]
+      }
+    },
+    { "name": "EDF", "hours": { "continuous": true } },
+    {
+      "name": "EIL", "hours": {
+        "continuous": false, "schedule": [
+          { "whenDST": true, "open": "15:00", "close": "07:00", "local": false },
+          { "whenDST": false, "open": "16:00", "close": "08:00", "local": false }
+        ]
+      }
+    },
+    {
+      "name": "ENA", "hours": {
+        "continuous": false, "schedule": [
+          { "start": { "month": 5, "day": 1 }, "end": { "month": 9, "day": 30 }, "open": "06:00", "close": "22:00", "local": true },
+          { "start": { "month": 10, "day": 1 }, "end": { "month": 4, "day": 30 }, "open": "07:00", "close": "21:00", "local": true }
+        ]
+      }
+    },
+    { "name": "FAI", "hours": { "continuous": true } },
+    {
+      "name": "FBK", "hours": {
+        "continuous": false, "schedule": [
+          { "whenDST": true, "open": "16:00", "close": "07:00", "local": false },
+          { "whenDST": false, "open": "17:00", "close": "08:00", "local": false }
+        ]
+      }
+    },
+    {
+      "name": "JNU", "hours": {
+        "continuous": false, "schedule": [
+          { "start": { "month": 4, "day": 1 }, "end": { "month": 9, "day": 30 }, "open": "06:00", "close": "23:00", "local": true },
+          { "start": { "month": 10, "day": 1 }, "end": { "month": 3, "day": 31 }, "open": "07:00", "close": "20:00", "local": true }
+        ]
+      }
+    },
+    { "name": "LHD", "hours": { "continuous": true } },
+    {
+      "name": "MRI", "hours": {
+        "continuous": false, "schedule": [
+          { "start": { "month": 1, "day": 1 }, "end": { "month": 12, "day": 31 }, "open": "07:00", "close": "22:00", "local": true }
+        ]
+      }
+    }
+  ]
+}

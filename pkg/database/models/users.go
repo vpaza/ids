@@ -20,7 +20,7 @@ import "github.com/adh-partnership/api/pkg/database"
 
 type User struct {
 	ID        int64  `json:"id"`
-	CID       uint   `json:"cid"`
+	CID       uint   `json:"cid" gorm:"column:cid"`
 	FirstName string `json:"first_name"`
 	LastName  string `json:"last_name"`
 	Email     string `json:"email"`

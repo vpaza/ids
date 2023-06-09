@@ -11,13 +11,12 @@ default:
 shell:
 	@$(RUN) /bin/bash
 
-local-run:
-	@$(MAKE_CONTAINER) dev
+serve:
+	@docker-compose up
 
-backend-run:
-	MISC_OPTIONS="-p 3000:3000" $(MAKE_CONTAINER) dev
+clean:
+	@docker-compose down -v
+	@$(MAKE_CONTAINER) clean
 
-frontend-run:
-	MISC_OPTIONS="-p 5174:5174" $(FRONTEND_MAKE_CONTAINER) dev
 
-.PHONY: default shell
+.PHONY: default shell clean serve frontend-run backend-run
