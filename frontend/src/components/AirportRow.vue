@@ -422,6 +422,9 @@ const betweenTimes = (start, end, local, days) => {
 
   dtstart = dtstart.set({ hour: start_hr, minute: start_min });
   dtend = dtend.set({ hour: end_hr, minute: end_min });
+  if (dtend < dtstart) {
+    dtend = dtend.plus({ days: 1 });
+  }
 
   return now >= dtstart && now < dtend;
 };

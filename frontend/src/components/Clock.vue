@@ -1,5 +1,5 @@
 <template>
-  <span class="clock">
+  <span class="clock" @click="showUTC = !showUTC">
     {{ time }}
   </span>
 </template>
@@ -9,6 +9,7 @@ import { onMounted, onUnmounted, ref } from "vue";
 import { useViewStore } from "@/store/viewstore";
 
 const store = useViewStore();
+const showUTC = ref(false);
 
 const props = defineProps({
   timezone: {
@@ -22,10 +23,14 @@ let timer;
 
 const updateClock = () => {
   let letter = "L";
-  if (props.timezone === "UTC") letter = "Z";
+  let timezone = props.timezone;
+  if (props.timezone === "UTC" || showUTC) {
+    letter = "Z";
+    timezone = "UTC";
+  }
   time.value = `${new Date()
     .toLocaleTimeString("en-UK", {
-      timeZone: props.timezone,
+      timeZone: timezone,
       hour12: false,
     })
     .slice(-8)} ${letter}`;
