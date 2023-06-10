@@ -57,7 +57,7 @@ func postvATIS(c echo.Context) error {
 		return response.RespondMessage(c, http.StatusNotFound, fmt.Sprintf("Airport not found %v", c.Param("airport")))
 	}
 
-	log.Infof("Received vATIS for %v, %v", airport.FAAID, vatis)
+	log.Infof("Received vATIS for %v, %+v", airport.FAAID, vatis)
 
 	if vatis.ATISType == "arrival" {
 		airport.ArrivalATIS = vatis.ATISLetter
@@ -67,7 +67,7 @@ func postvATIS(c echo.Context) error {
 		airport.ATISTime = utils.Now()
 	}
 
-	log.Infof("Setting airport data: %v", airport)
+	log.Infof("Setting airport data: %+v", airport)
 
 	if err := database.DB.Save(airport).Error; err != nil {
 		return response.RespondError(c, http.StatusInternalServerError, err)
