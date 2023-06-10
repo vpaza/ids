@@ -56,6 +56,8 @@ export const useViewStore = defineStore("view", {
         setTimeout(() => {
           this.updateSIA(airport);
         }, 15000);
+      } finally {
+        this.fetching.splice(this.fetching.indexOf(airport), 1);
       }
     },
     async updateMetars() {
