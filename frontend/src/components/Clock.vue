@@ -24,7 +24,7 @@ let timer;
 const updateClock = () => {
   let letter = "L";
   let timezone = props.timezone;
-  if (props.timezone === "UTC" || showUTC) {
+  if (props.timezone === "UTC" || showUTC.value) {
     letter = "Z";
     timezone = "UTC";
   }
