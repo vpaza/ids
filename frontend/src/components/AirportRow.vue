@@ -181,6 +181,10 @@ const fields = {
   arrrwy: arrrwybox,
 };
 
+onMounted(() => {
+  isClosed.value = closed();
+})
+
 watch(
   () => store.sia[props.airport].metar,
   () => {
@@ -243,6 +247,7 @@ watch(
           f.classList.add("bg-blue-900");
         }
       } else {
+        fields[field].value.classList.remove("bg-blue-900");
         flashes[field] = undefined;
       }
     });

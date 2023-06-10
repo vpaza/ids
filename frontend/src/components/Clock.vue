@@ -32,7 +32,7 @@ const updateClock = () => {
 
   // Check if seconds are 0, if so, update store.heartbeat.minute...
   // the value doesn't matter.. we just need to change
-  if (time.value.slice(-2) === "00") {
+  if (time.value.slice(-4) === "00 L") {
     store.heartbeat.minute = time.value;
   }
   store.heartbeat.second = time.value;
