@@ -56,7 +56,13 @@
         </button>
       </div>
       <div v-else>
-        <a :href="`${fac.facility.api}/v1/oauth/login?redirect=${location}`">Login</a>
+        <a :href="`${fac.facility.api}/v1/oauth/login?redirect=${location}`">
+          <button
+            class="border-2 border-gray-500 bg-slate-800 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded h-full w-[10rem] mr-1"
+          >
+            Login
+          </button>
+        </a>
       </div>
     </footer>
   </div>
