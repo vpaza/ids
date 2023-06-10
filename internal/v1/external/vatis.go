@@ -18,7 +18,6 @@ package external
 
 import (
 	"fmt"
-	"io"
 	"net/http"
 
 	"github.com/adh-partnership/api/pkg/database"
@@ -33,9 +32,9 @@ import (
 type vATISDTO struct {
 	Facility          string `json:"facility"`
 	Preset            string `json:"preset"`
-	ATISLetter        string `json:"atis_letter"`
-	ATISType          string `json:"atis_type"`
-	AirportConditions string `json:"airport_conditions"`
+	ATISLetter        string `json:"atisLetter"`
+	ATISType          string `json:"atisType"`
+	AirportConditions string `json:"airportConditions"`
 	NOTAMs            string `json:"notams"`
 	Timestamp         string `json:"timestamp"`
 	Version           string `json:"version"`
@@ -44,13 +43,6 @@ type vATISDTO struct {
 var log = logger.Logger.WithField("component", "vatis")
 
 func postvATIS(c echo.Context) error {
-	// Dump the body
-	body, err := io.ReadAll(c.Request().Body)
-	if err != nil {
-		return response.RespondError(c, http.StatusBadRequest, err)
-	}
-	log.Infof("Received vATIS: %v", string(body))
-
 	var vatis vATISDTO
 	if err := c.Bind(&vatis); err != nil {
 		return response.RespondError(c, http.StatusBadRequest, err)

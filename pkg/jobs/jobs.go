@@ -33,7 +33,7 @@ var log = logger.Logger.WithField("component", "jobs")
 
 func BuildJobs() {
 	s = gocron.NewScheduler(time.UTC)
-	_, _ = s.Every(1).Minutes().SingletonMode().Do(updateWeather)
+	_, _ = s.Every(3).Minutes().SingletonMode().Do(updateWeather)
 	_, _ = s.Every(1).Minutes().SingletonMode().Do(clean)
 }
 
