@@ -105,66 +105,82 @@ func main() {
 		panic(err)
 	}
 
+	// Truncate the airport table
+	err = database.DB.Exec("TRUNCATE TABLE airports").Error
+	if err != nil {
+		panic(err)
+	}
+
 	for _, airport := range facility.Airports {
-		ret, err := lookupAirportInfo(airport.Name)
-		if err != nil {
-			fmt.Printf("Error lookuping up icao identifier for %s: %s. Skipping.\n", airport.Name, err)
-			continue
-		}
-		a := &models.Airport{
-			FAAID:            airport.Name,
-			ICAOID:           ret.ICAOIdent,
-			ATIS:             "",
-			ATISTime:         utils.Now(),
-			DepartureRunways: "",
-			ArrivalRunways:   "",
-			METAR:            "",
-			TAF:              "",
-			MagVar:           ret.MagVar,
-		}
+		for {
+			fmt.Printf("Handling airport %s... ", airport.Name)
+			ret, err := lookupAirportInfo(airport.Name)
+			if err != nil {
+				fmt.Printf("Error lookuping up icao identifier for %s: %s. Sleeping and retrying...\n", airport.Name, err)
+				time.Sleep(5 * time.Second)
+				continue
+			}
+			a := &models.Airport{
+				FAAID:            airport.Name,
+				ICAOID:           ret.ICAOIdent,
+				ATIS:             "",
+				ATISTime:         utils.Now(),
+				DepartureRunways: "",
+				ArrivalRunways:   "",
+				METAR:            "",
+				TAF:              "",
+				MagVar:           ret.MagVar,
+			}
 
-		// If it exists, delete it
-		if err := database.DB.Where("icao_id = ?", a.ICAOID).Delete(&models.Airport{}).Error; err != nil {
-			fmt.Printf("Error deleting airport %s: %s. Skipping.\n", airport.Name, err)
-			continue
-		}
+			// Recreate
+			err = database.DB.Create(a).Error
+			if err != nil {
+				fmt.Printf("Error creating airport %s: %s. Skipping.\n", airport.Name, err)
+				break
+			}
 
-		// Recreate
-		err = database.DB.Create(a).Error
-		if err != nil {
-			fmt.Printf("Error creating airport %s: %s. Skipping.\n", airport.Name, err)
-			continue
+			fmt.Printf("done\n")
+			break
 		}
+		time.Sleep(250 * time.Millisecond)
 	}
 
 	for _, airport := range facility.WXStations {
-		// If it exists, skip
-		var count int64
-		err := database.DB.Model(&models.Airport{}).Where("icao_id = ?", airport).Count(&count).Error
-		if err != nil {
-			fmt.Printf("Error checking if airport %s exists: %s. Skipping.\n", airport, err)
-			continue
-		}
-		if count > 0 {
-			continue
-		}
+		for {
+			fmt.Printf("Handling airport %s... ", airport)
+			// If it exists, skip
+			var count int64
+			err := database.DB.Model(&models.Airport{}).Where("icao_id = ?", airport).Count(&count).Error
+			if err != nil {
+				fmt.Printf("Error checking if airport %s exists: %s. Skipping.\n", airport, err)
+				panic(err)
+			}
+			if count > 0 {
+				fmt.Printf("already exists.. skipping\n")
+				break
+			}
 
-		ret, err := lookupAirportInfo(airport)
-		if err != nil {
-			fmt.Printf("Error lookuping up icao identifier for %s: %s. Skipping.\n", airport, err)
-			continue
-		}
+			ret, err := lookupAirportInfo(airport)
+			if err != nil {
+				fmt.Printf("Error lookuping up icao identifier for %s: %s. Sleeping and retrying...\n", airport, err)
+				time.Sleep(5 * time.Second)
+				continue
+			}
 
-		// Recreate
-		err = database.DB.Create(&models.Airport{
-			FAAID:  ret.FAAIdent,
-			ICAOID: airport,
-			MagVar: ret.MagVar,
-		}).Error
-		if err != nil {
-			fmt.Printf("Error creating airport %s: %s. Skipping.\n", airport, err)
-			continue
+			// Recreate
+			err = database.DB.Create(&models.Airport{
+				FAAID:  ret.FAAIdent,
+				ICAOID: airport,
+				MagVar: ret.MagVar,
+			}).Error
+			if err != nil {
+				fmt.Printf("Error creating airport %s: %s. Skipping.\n", airport, err)
+				continue
+			}
+			fmt.Printf("done\n")
+			break
 		}
+		time.Sleep(250 * time.Millisecond)
 	}
 
 	fmt.Println("Done!")

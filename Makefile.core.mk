@@ -68,3 +68,6 @@ clean:
 dist-clean: clean
 	@rm -rf vendor
 	@rm -rf frontend/node_modules
+
+bootstrap:
+	@go run ./tools/bootstrap/main.go
