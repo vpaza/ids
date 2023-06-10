@@ -145,7 +145,7 @@ const showModal = ref(false);
 const modalText = ref("");
 const editing = ref("");
 const modaleditbox = ref(null);
-const flashes = ref({});
+const flashes = {};
 const metarbox = ref(null);
 const atisbox = ref(null);
 const arratisbox = ref(null);
@@ -182,55 +182,47 @@ const fields = {
 };
 
 watch(
-  () => store.sia[props.airport],
+  () => store.sia[props.airport].metar,
   () => {
-    if (!initialized) {
-      watch(
-        () => store.sia[props.airport].metar,
-        () => {
-          if (store.sia[props.airport].first) return;
-          if (typeof metarbox.value === "undefined") return;
-          flashes.value.metar = fac.facility.update_flash_duration;
-        }
-      );
+    if (store.sia[props.airport].first) return;
+    if (typeof metarbox.value === "undefined") return;
+    flashes.metar = fac.facility.update_flash_duration;
+  }
+);
 
-      watch(
-        () => store.sia[props.airport].atis,
-        () => {
-          if (store.sia[props.airport].first) return;
-          if (typeof atisbox.value === "undefined") return;
-          flashes.value.atis = fac.facility.update_flash_duration;
-        }
-      );
+watch(
+  () => store.sia[props.airport].atis,
+  () => {
+    if (store.sia[props.airport].first) return;
+    if (typeof atisbox.value === "undefined") return;
+    flashes.atis = fac.facility.update_flash_duration;
+  }
+);
 
-      watch(
-        () => store.sia[props.airport].arrival_atis,
-        () => {
-          if (store.sia[props.airport].first) return;
-          if (typeof arratisbox.value === "undefined") return;
-          flashes.value.arratis = fac.facility.update_flash_duration;
-        }
-      );
+watch(
+  () => store.sia[props.airport].arrival_atis,
+  () => {
+    if (store.sia[props.airport].first) return;
+    if (typeof arratisbox.value === "undefined") return;
+    flashes.arratis = fac.facility.update_flash_duration;
+  }
+);
 
-      watch(
-        () => store.sia[props.airport].departure_runways,
-        () => {
-          if (store.sia[props.airport].first) return;
-          if (typeof deprwybox.value === "undefined") return;
-          flashes.value.deprwy = fac.facility.update_flash_duration;
-        }
-      );
+watch(
+  () => store.sia[props.airport].departure_runways,
+  () => {
+    if (store.sia[props.airport].first) return;
+    if (typeof deprwybox.value === "undefined") return;
+    flashes.deprwy = fac.facility.update_flash_duration;
+  }
+);
 
-      watch(
-        () => store.sia[props.airport].arrival_runways,
-        () => {
-          if (store.sia[props.airport].first) return;
-          if (typeof arrrwybox.value === "undefined") return;
-          flashes.value.arrrwy = fac.facility.update_flash_duration;
-        }
-      );
-      initialized = true;
-    }
+watch(
+  () => store.sia[props.airport].arrival_runways,
+  () => {
+    if (store.sia[props.airport].first) return;
+    if (typeof arrrwybox.value === "undefined") return;
+    flashes.arrrwy = fac.facility.update_flash_duration;
   }
 );
 
