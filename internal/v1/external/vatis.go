@@ -21,6 +21,7 @@ import (
 	"net/http"
 
 	"github.com/adh-partnership/api/pkg/database"
+	"github.com/adh-partnership/api/pkg/logger"
 	"github.com/labstack/echo/v4"
 
 	"github.com/vpaza/ids/internal/response"
@@ -39,6 +40,8 @@ type vATISDTO struct {
 	Version           string `json:"version"`
 }
 
+var log = logger.Logger.WithField("component", "vatis")
+
 func postvATIS(c echo.Context) error {
 	var vatis vATISDTO
 	if err := c.Bind(&vatis); err != nil {
@@ -54,6 +57,8 @@ func postvATIS(c echo.Context) error {
 		return response.RespondMessage(c, http.StatusNotFound, fmt.Sprintf("Airport not found %v", c.Param("airport")))
 	}
 
+	log.Infof("Received vATIS for %v, %v", airport.FAAID, vatis)
+
 	if vatis.ATISType == "arrival" {
 		airport.ArrivalATIS = vatis.ATISLetter
 		airport.ArrivalATISTime = utils.Now()
@@ -61,6 +66,8 @@ func postvATIS(c echo.Context) error {
 		airport.ATIS = vatis.ATISLetter
 		airport.ATISTime = utils.Now()
 	}
+
+	log.Infof("Setting airport data: %v", airport)
 
 	if err := database.DB.Save(airport).Error; err != nil {
 		return response.RespondError(c, http.StatusInternalServerError, err)
