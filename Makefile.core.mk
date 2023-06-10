@@ -48,7 +48,7 @@ assemble-release:
 	@cp -r static out/
 
 .PHONY: build
-build: frontend-build backend-build assemble-release build-image
+build: frontend-build backend-build assemble-release
 
 .PHONY: mod-vendor
 mod-vendor:
