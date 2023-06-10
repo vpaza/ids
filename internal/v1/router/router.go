@@ -20,6 +20,7 @@ import (
 	"github.com/adh-partnership/api/pkg/logger"
 	"github.com/labstack/echo/v4"
 
+	"github.com/vpaza/ids/internal/v1/external"
 	"github.com/vpaza/ids/internal/v1/oauth"
 	"github.com/vpaza/ids/internal/v1/sia"
 	"github.com/vpaza/ids/internal/v1/weather"
@@ -32,6 +33,7 @@ var (
 
 func init() {
 	routeGroups = make(map[string]func(e *echo.Group))
+	routeGroups["/external"] = external.Routes
 	routeGroups["/oauth"] = oauth.Routes
 	routeGroups["/weather"] = weather.Routes
 	routeGroups["/sia"] = sia.Routes
