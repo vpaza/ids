@@ -38,7 +38,8 @@ type Airport struct {
 }
 
 type Facility struct {
-	Airports []*Airport `json:"airports"`
+	Airports   []*Airport `json:"airports"`
+	WXStations []string   `json:"wx_stations"`
 }
 
 func main() {
@@ -136,16 +137,48 @@ func main() {
 		}
 	}
 
+	for _, airport := range facility.WXStations {
+		// If it exists, skip
+		var count int64
+		err := database.DB.Model(&models.Airport{}).Where("icao_id = ?", airport).Count(&count).Error
+		if err != nil {
+			fmt.Printf("Error checking if airport %s exists: %s. Skipping.\n", airport, err)
+			continue
+		}
+		if count > 0 {
+			continue
+		}
+
+		ret, err := lookupAirportInfo(airport)
+		if err != nil {
+			fmt.Printf("Error lookuping up icao identifier for %s: %s. Skipping.\n", airport, err)
+			continue
+		}
+
+		// Recreate
+		err = database.DB.Create(&models.Airport{
+			FAAID:  ret.FAAIdent,
+			ICAOID: airport,
+			MagVar: ret.MagVar,
+		}).Error
+		if err != nil {
+			fmt.Printf("Error creating airport %s: %s. Skipping.\n", airport, err)
+			continue
+		}
+	}
+
 	fmt.Println("Done!")
 }
 
 // We only need certain fields...
 type AviationAPIResponse struct {
+	FAAIdent          string `json:"faa_ident"`
 	ICAOIdent         string `json:"icao_ident"`
 	MagneticVariation string `json:"magnetic_variation"`
 }
 
 type Ret struct {
+	FAAIdent  string
 	ICAOIdent string
 	MagVar    int
 }
@@ -172,11 +205,13 @@ func lookupAirportInfo(faaid string) (*Ret, error) {
 	var apiResp map[string][]*AviationAPIResponse
 	err = json.Unmarshal(contents, &apiResp)
 	if err != nil {
+		fmt.Printf("Unable to unmarshal response: %s", string(contents))
 		return nil, err
 	}
 
 	if len(apiResp) > 0 {
 		return &Ret{
+			FAAIdent:  apiResp[faaid][0].FAAIdent,
 			ICAOIdent: apiResp[faaid][0].ICAOIdent,
 			MagVar:    calcMagVar(apiResp[faaid][0].MagneticVariation),
 		}, nil

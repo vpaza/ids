@@ -34,7 +34,7 @@ var log = logger.Logger.WithField("component", "jobs")
 func BuildJobs() {
 	s = gocron.NewScheduler(time.UTC)
 	_, _ = s.Every(1).Minutes().SingletonMode().Do(updateWeather)
-	_, _ = s.Every(1).Minutes().SingletonMode().Do(cleanPireps)
+	_, _ = s.Every(1).Minutes().SingletonMode().Do(clean)
 }
 
 func Start() {
@@ -65,11 +65,22 @@ func updateWeather() {
 	}
 }
 
-func cleanPireps() {
-	log.Debugf("Running: cleanPireps")
+func clean() {
+	log.Infof("Running: clean")
 
 	// Find and delete any pirep older than 2 hours
 	if err := database.DB.Where("created_at < ?", time.Now().Add(-2*time.Hour)).Delete(&models.PIREP{}).Error; err != nil {
 		log.Errorf("Error cleaning PIREPs: %s", err)
+	}
+
+	// Unset ATIS or ArrivalATIS if more than 90 minutes old
+	if err := database.DB.Model(&models.Airport{}).Where("atis NOT LIKE ''").Where("atis_time < ?", time.Now().Add(-90*time.Minute)).
+		Updates(map[string]interface{}{"atis": "", "atis_time": nil}).Error; err != nil {
+		log.Errorf("Error cleaning ATIS: %s", err)
+	}
+
+	if err := database.DB.Model(&models.Airport{}).Where("arrival_atis NOT LIKE ''").Where("arrival_atis_time < ?", time.Now().Add(-90*time.Minute)).
+		Updates(map[string]interface{}{"arrival_atis": "", "arrival_atis_time": nil}).Error; err != nil {
+		log.Errorf("Error cleaning Arrival ATIS: %s", err)
 	}
 }

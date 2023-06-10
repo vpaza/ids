@@ -27,14 +27,17 @@ import (
 
 	"github.com/vpaza/ids/internal/response"
 	"github.com/vpaza/ids/pkg/database/models"
+	"github.com/vpaza/ids/pkg/utils"
 )
 
 type SIADTO struct {
-	ATIS             string     `json:"atis"`
+	ATIS             *string    `json:"atis"`
 	ATISTime         *time.Time `json:"atis_time"`
-	DepartureRunways string     `json:"departure_runways"`
-	ArrivalRunways   string     `json:"arrival_runways"`
-	METAR            string     `json:"metar"`
+	ArrivalATIS      *string    `json:"arrival_atis"`
+	ArrivalATISTime  *time.Time `json:"arrival_atis_time"`
+	DepartureRunways *string    `json:"departure_runways"`
+	ArrivalRunways   *string    `json:"arrival_runways"`
+	METAR            *string    `json:"metar"`
 }
 
 var log = logger.Logger.WithField("component", "sia")
@@ -63,11 +66,11 @@ func getSIABulk(e echo.Context) error {
 	for _, a := range airports {
 		if a != nil {
 			ret[a.FAAID] = &SIADTO{
-				ATIS:             a.ATIS,
+				ATIS:             &a.ATIS,
 				ATISTime:         a.ATISTime,
-				DepartureRunways: a.DepartureRunways,
-				ArrivalRunways:   a.ArrivalRunways,
-				METAR:            a.METAR,
+				DepartureRunways: &a.DepartureRunways,
+				ArrivalRunways:   &a.ArrivalRunways,
+				METAR:            &a.METAR,
 			}
 		}
 	}
@@ -89,21 +92,26 @@ func patchSIA(e echo.Context) error {
 		return response.RespondMessage(e, http.StatusNotFound, "Airport Not Found")
 	}
 
-	if s.ATIS != "" {
+	if s.ATIS != nil {
 		log.Infof("Updating ATIS for %s", a.FAAID)
-		a.ATIS = s.ATIS
-		n := time.Now()
-		a.ATISTime = &n
+		a.ATIS = *s.ATIS
+		a.ATISTime = utils.Now()
 	}
 
-	if s.DepartureRunways != "" {
+	if s.ArrivalATIS != nil {
+		log.Infof("Updating Arrival ATIS for %s", a.FAAID)
+		a.ArrivalATIS = *s.ArrivalATIS
+		a.ArrivalATISTime = utils.Now()
+	}
+
+	if s.DepartureRunways != nil {
 		log.Infof("Updating Departure Runways for %s", a.FAAID)
-		a.DepartureRunways = s.DepartureRunways
+		a.DepartureRunways = *s.DepartureRunways
 	}
 
-	if s.ArrivalRunways != "" {
+	if s.ArrivalRunways != nil {
 		log.Infof("Updating Arrival Runways for %s", a.FAAID)
-		a.ArrivalRunways = s.ArrivalRunways
+		a.ArrivalRunways = *s.ArrivalRunways
 	}
 
 	if err := database.DB.Save(a).Error; err != nil {

@@ -5,36 +5,47 @@
 </template>
 
 <script setup>
-import { ref, onMounted, onUnmounted } from 'vue'
+import { onMounted, onUnmounted, ref } from "vue";
+import { useViewStore } from "@/store/viewstore";
+
+const store = useViewStore();
 
 const props = defineProps({
   timezone: {
     type: String,
-    default: 'UTC',
+    default: "UTC",
   },
 });
 
 const time = ref("");
-let timer = undefined;
+let timer;
 
 const updateClock = () => {
   let letter = "L";
-  if (props.timezone === 'UTC') letter="Z";
-  time.value = new Date().toLocaleTimeString('en-UK', {
-    timeZone: props.timezone,
-    hour12: false,
-  }).slice(-8) + " " + letter;
-}
+  if (props.timezone === "UTC") letter = "Z";
+  time.value = `${new Date()
+    .toLocaleTimeString("en-UK", {
+      timeZone: props.timezone,
+      hour12: false,
+    })
+    .slice(-8)} ${letter}`;
+
+  // Check if seconds are 0, if so, update store.heartbeat.minute...
+  // the value doesn't matter.. we just need to change
+  if (time.value.slice(-2) === "00") {
+    store.heartbeat.minute = time.value;
+  }
+  store.heartbeat.second = time.value;
+};
 
 onMounted(() => {
-  timer = setInterval(updateClock, 1000)
+  timer = setInterval(updateClock, 1000);
   updateClock();
 });
 
 onUnmounted(() => {
   clearInterval(timer);
 });
-
 </script>
 
 <style scoped>

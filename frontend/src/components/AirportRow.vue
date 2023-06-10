@@ -13,22 +13,64 @@
     <td class="border border-gray-500 text-center">??</td>
   </tr>
   <tr v-if="sia[props.airport] !== undefined">
-    <td rowspan="2" class="text-5xl w-[10%] border border-gray-500 text-center">
+    <td rowspan="2" class="text-5xl w-[3em] border border-gray-500 text-center">
       {{ props.airport }}
     </td>
-    <td ref="atisbox" rowspan="2" class="text-5xl text-center w-[5%] border border-gray-500" @click="editATIS()" v-if="!isClosed">
+    <td
+      v-if="!isClosed && hasDualATIS"
+      ref="arratisbox"
+      rowspan="2"
+      class="text-5xl text-center w-[1em] border border-gray-500"
+      @click.right.stop.prevent="checkHideArr()"
+      @click.middle.stop.prevent="clearField('arrival_atis')"
+      @click="editArrATIS()"
+    >
+      {{ sia[props.airport].arrival_atis != "" ? sia[props.airport].arrival_atis : "-" }}
+    </td>
+    <td
+      v-if="!isClosed && hasDualATIS"
+      ref="atisbox"
+      rowspan="2"
+      class="text-5xl text-center w-[1em] border border-gray-500"
+      @click.middle.stop.prevent="clearField('atis')"
+      @click="editATIS()"
+    >
       {{ sia[props.airport].atis != "" ? sia[props.airport].atis : "-" }}
     </td>
-    <td ref="arrrwybox" class="w-[10%] border border-gray-500" v-if="!isClosed" @click="editArrRwy()">
+    <td
+      v-if="!isClosed && !hasDualATIS"
+      ref="atisbox"
+      colspan="2"
+      rowspan="2"
+      class="text-5xl text-center w-[2em] border border-gray-500"
+      @click.right.stop.prevent="overrideArrival = true"
+      @click.middle.stop.prevent="clearField('atis')"
+      @click="editATIS()"
+    >
+      {{ sia[props.airport].atis != "" ? sia[props.airport].atis : "-" }}
+    </td>
+    <td
+      v-if="!isClosed"
+      ref="arrrwybox"
+      class="border border-gray-500 w-[15em]"
+      @click="editArrRwy()"
+      @click.middle.stop.prevent="clearField('arrival_runways')"
+    >
       <span class="pr-2">ARR:</span>
       {{ sia[props.airport].arrival_runways != "" ? sia[props.airport].arrival_runways : "______" }}
     </td>
-    <td rowspan="2" colspan="2" class="w-[10%] border border-gray-500 light-red text-center" v-if="isClosed">CLOSED</td>
-    <td class="w-[10%] border border-gray-500 text-center text-yellow-400 font-bold">{{ wind }}</td>
+    <td v-if="isClosed" rowspan="2" colspan="3" class="border border-gray-500 light-red text-center">CLOSED</td>
+    <td class="w-[10em] border border-gray-500 text-center text-yellow-400 font-bold">{{ wind }}</td>
     <td ref="metarbox" rowspan="2" class="border border-gray-500 align-top">{{ sia[props.airport].metar }}</td>
   </tr>
   <tr v-if="sia[props.airport] !== undefined">
-    <td ref="deprwybox" class="border border-gray-500" v-if="!isClosed" @click="editDepRwy()">
+    <td
+      v-if="!isClosed"
+      ref="deprwybox"
+      class="border border-gray-500"
+      @click="editDepRwy()"
+      @click.middle.stop.prevent="clearField('departure_runways')"
+    >
       <span class="pr-2">DEP:</span>
       {{ sia[props.airport].departure_runways != "" ? sia[props.airport].departure_runways : "______" }}
     </td>
@@ -43,12 +85,12 @@
       <div class="flex items-center justify-between">
         <h3 class="text-2xl">Edit</h3>
         <svg
-          @click="showModal = false"
           xmlns="http://www.w3.org/2000/svg"
           class="w-8 h-8 text-red-900 cursor-pointer"
           fill="none"
           viewBox="0 0 24 24"
           stroke="currentColor"
+          @click="showModal = false"
         >
           <path
             stroke-linecap="round"
@@ -59,14 +101,23 @@
         </svg>
       </div>
       <div class="mt-4">
-        <p class="mb-4 text-sm">
+        <div class="mb-4 text-sm">
           <div class="flex items-center">
             <label class="block text-gray-100 font-bold pr-4 capitalize">{{ editing.replace("_", " ") }}:</label>
-            <input ref="modaleditbox" type="text" class="w-full px-4 py-2 text-gray-100 bg-gray-600 rounded focus:bg-gray-600 focus:outline-none uppercase" v-model="modalText" @keyup.enter="saveModal" />
+            <input
+              ref="modaleditbox"
+              v-model="modalText"
+              type="text"
+              class="w-full px-4 py-2 text-gray-100 bg-gray-600 rounded focus:bg-gray-600 focus:outline-none uppercase"
+              @keyup.esc="showModal = false"
+              @keyup.enter="saveModal"
+            />
           </div>
-        </p>
-        <button @click="showModal = false" class="px-6 py-2 text-gray-100 border border-red-600 light-red rounded">Cancel</button>
-        <button @click="saveModal" class="px-6 py-2 ml-2 text-blue-100 bg-blue-600 rounded">Save</button>
+        </div>
+        <button class="px-6 py-2 text-gray-100 border border-red-600 light-red rounded" @click="showModal = false">
+          Cancel
+        </button>
+        <button class="px-6 py-2 ml-2 text-blue-100 bg-blue-600 rounded" @click="saveModal">Save</button>
       </div>
     </div>
   </div>
@@ -77,9 +128,9 @@
 
 import { DateTime } from "luxon";
 import { storeToRefs } from "pinia";
+import { computed, onBeforeUnmount, onMounted, ref, watch } from "vue";
 import { useViewStore } from "@/store/viewstore";
 import fac from "@/facility.json";
-import { onBeforeUnmount, onMounted, computed, ref, watch } from "vue";
 import { parseMetar } from "@/utils/metar.js";
 
 const props = defineProps({
@@ -92,35 +143,27 @@ const store = useViewStore();
 const { sia } = storeToRefs(store);
 const showModal = ref(false);
 const modalText = ref("");
-let editing = ref("");
+const editing = ref("");
 const modaleditbox = ref(null);
 const flashes = ref({});
-const timers = {};
 const metarbox = ref(null);
 const atisbox = ref(null);
+const arratisbox = ref(null);
 const deprwybox = ref(null);
 const arrrwybox = ref(null);
 const isClosed = ref(false);
-let closeTimer = undefined;
-let syncTimer = undefined;
+const overrideArrival = ref(false);
+let initialized = false;
+const hasDualATIS = computed(
+  () =>
+    fac.airports.filter((a) => a.name === props.airport)[0]["dual-atis"] === true &&
+    (overrideArrival.value || sia.value[props.airport].arrival_atis !== "")
+);
+const airport = fac.airports.filter((a) => a.name === props.airport)[0];
 
-onMounted(() => {
-  const airport = fac.airports.filter((a) => a.name === props.airport)[0];
-  if (airport === undefined) return false;
-
-  if (airport.hours.continuous) return;
-  isClosed.value = closed();
-  syncTimer = setInterval(() => {
-    // Check if we are 0 seconds into the next minute and then schedule
-    // a check for the next minute
-    if (DateTime.local().second === 0) {
-      closeTimer = setInterval(() => {
-        isClosed.value = closed();
-      }, 60000);
-      clearInterval(syncTimer);
-    }
-  }, 1000);
-});
+const clearField = (field) => {
+  store.patchSIA(props.airport, field, "");
+};
 
 const saveModal = () => {
   store.patchSIA(props.airport, editing.value, modalText.value.toUpperCase());
@@ -130,83 +173,118 @@ const saveModal = () => {
   showModal.value = false;
 };
 
-watch(() => store.sia[props.airport].metar, () => {
-  flashes.metar = fac.facility.update_flash_duration;
-  if (timers.metar) clearTimeout(timers.metar);
-  timers.metar = setInterval(() => {
-    flashField("metar");
-  }, 1000);
-});
+const fields = {
+  metar: metarbox,
+  arratis: arratisbox,
+  atis: atisbox,
+  deprwy: deprwybox,
+  arrrwy: arrrwybox,
+};
 
-watch(() => store.sia[props.airport].atis, () => {
-  flashes.atis = fac.facility.update_flash_duration;
-  if (timers.atis) clearTimeout(timers.atis);
-  timers.atis = setInterval(() => {
-    flashField("atis");
-  }, 1000);
-});
+watch(
+  () => store.sia[props.airport],
+  () => {
+    if (!initialized) {
+      watch(
+        () => store.sia[props.airport].metar,
+        () => {
+          if (store.sia[props.airport].first) return;
+          if (typeof metarbox.value === "undefined") return;
+          flashes.value.metar = fac.facility.update_flash_duration;
+        }
+      );
 
-watch(() => store.sia[props.airport].departure_runways, () => {
-  flashes.deprwy = fac.facility.update_flash_duration;
-  if (timers.deprwy) clearTimeout(timers.deprwy);
-  timers.deprwy = setInterval(() => {
-    flashField("deprwy");
-  }, 1000);
-});
+      watch(
+        () => store.sia[props.airport].atis,
+        () => {
+          if (store.sia[props.airport].first) return;
+          if (typeof atisbox.value === "undefined") return;
+          flashes.value.atis = fac.facility.update_flash_duration;
+        }
+      );
 
-watch(() => store.sia[props.airport].arrival_runways, () => {
-  flashes.arrrwy = fac.facility.update_flash_duration;
-  if (timers.arrrwy) clearTimeout(timers.arrrwy);
-  timers.arrrwy = setInterval(() => {
-    flashField("arrrwy");
-  }, 1000);
-});
+      watch(
+        () => store.sia[props.airport].arrival_atis,
+        () => {
+          if (store.sia[props.airport].first) return;
+          if (typeof arratisbox.value === "undefined") return;
+          flashes.value.arratis = fac.facility.update_flash_duration;
+        }
+      );
 
-onBeforeUnmount(() => {
-  clearInterval(timers.metar);
-  clearInterval(timers.atis);
-  clearInterval(timers.deprwy);
-  clearInterval(timers.arrrwy);
-  clearInterval(syncTimer);
-  clearInterval(closeTimer);
-});
+      watch(
+        () => store.sia[props.airport].departure_runways,
+        () => {
+          if (store.sia[props.airport].first) return;
+          if (typeof deprwybox.value === "undefined") return;
+          flashes.value.deprwy = fac.facility.update_flash_duration;
+        }
+      );
 
-const flashField = (field) => {
-  if (flashes[field] > 0) {
-    flashes[field]--;
-    // Check if field has class bg-blue-500
-    let f = null;
-    if (field === "metar") {
-      f = metarbox.value;
-    } else if (field === "atis") {
-      f = atisbox.value;
-    } else if (field === "deprwy") {
-      f = deprwybox.value;
-    } else if (field === "arrrwy") {
-      f = arrrwybox.value;
+      watch(
+        () => store.sia[props.airport].arrival_runways,
+        () => {
+          if (store.sia[props.airport].first) return;
+          if (typeof arrrwybox.value === "undefined") return;
+          flashes.value.arrrwy = fac.facility.update_flash_duration;
+        }
+      );
+      initialized = true;
     }
-
-    if (f.classList.contains("bg-blue-900")) {
-      f.classList.remove("bg-blue-900");
-    } else {
-      f.classList.add("bg-blue-900");
-    }
-  } else {
-    clearTimeout(timers[field]);
-    timers[field] = undefined;
   }
-}
+);
+
+watch(
+  () => store.heartbeat.second,
+  () => {
+    Object.keys(flashes).forEach((field) => {
+      if (flashes[field] > 0) {
+        flashes[field]--;
+        if (fields[field] === undefined) {
+          flashes[field] = undefined;
+          return;
+        }
+        const f = fields[field].value;
+        if (f.classList.contains("bg-blue-900")) {
+          f.classList.remove("bg-blue-900");
+        } else {
+          f.classList.add("bg-blue-900");
+        }
+      } else {
+        flashes[field] = undefined;
+      }
+    });
+  }
+);
+
+watch(
+  () => store.heartbeat.minute,
+  () => {
+    if (airport.hours.continuous) return;
+    isClosed.value = closed();
+  }
+);
+
+const checkHideArr = () => {
+  overrideArrival.value = sia.value[props.airport].arrival_atis !== "" && overrideArrival.value;
+};
 
 const openModal = () => {
   showModal.value = true;
   setTimeout(() => {
     modaleditbox.value.select();
   }, 0);
-}
+};
 
 const editATIS = () => {
   editing.value = "ATIS";
   modalText.value = sia.value[props.airport].atis;
+  openModal();
+};
+
+const editArrATIS = () => {
+  editing.value = "arrival_ATIS";
+  modalText.value = sia.value[props.airport].arrival_atis;
   openModal();
 };
 
@@ -231,7 +309,7 @@ const wind = computed(() => {
     return "??";
   }
 
-  let m = parseMetar(sia.value[props.airport].metar);
+  const m = parseMetar(sia.value[props.airport].metar);
   if (m.wind === undefined) {
     return "??";
   }
@@ -240,7 +318,9 @@ const wind = computed(() => {
     return "CALM";
   }
 
-  let wind = `${calcWindDir(m.wind.degrees, sia.value[props.airport].mag_var).toString().padStart(3, "0")} @ ${m.wind.speed_kts}`;
+  let wind = `${calcWindDir(m.wind.degrees, sia.value[props.airport].mag_var).toString().padStart(3, "0")} @ ${
+    m.wind.speed_kts
+  }`;
   if (m.wind.gust_kts > m.wind.speed_kts + 6) {
     wind += `G${m.wind.gust_kts}`;
   }
@@ -257,7 +337,7 @@ const calcWindDir = (dir, magvar) => {
   }
 
   return dir + magvar;
-}
+};
 
 const altimeter = computed(() => {
   if (
@@ -350,7 +430,7 @@ const betweenTimes = (start, end, local, days) => {
 };
 
 const inDST = () => {
-  let offset = getTimezoneOffset() / 60;
+  const offset = getTimezoneOffset() / 60;
   return fac.timezone.dst === offset;
 };
 

@@ -6,10 +6,10 @@
 
 <script setup>
 import { ref, watch } from "vue";
+import { storeToRefs } from "pinia";
 import fac from "@/facility.json";
 import AirportRow from "@/components/AirportRow.vue";
 import { useViewStore } from "../store/viewstore";
-import { storeToRefs } from "pinia";
 
 const store = useViewStore();
 const { view } = storeToRefs(store);
@@ -20,6 +20,4 @@ watch(view, () => {
 const viewFacility = ref(fac.views[view.value]);
 </script>
 
-<style lang="scss" scoped>
-
-</style>
+<style lang="scss" scoped></style>

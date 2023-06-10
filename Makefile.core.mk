@@ -13,6 +13,15 @@ lint-go:
 lint-markdown:
 	@${FINDFILES} -name '*.md' -print0 | ${XARGS} mdl --ignore-front-matter --style .mdl.rb
 
+frontend-lint:
+	@cd frontend && yarn lint
+
+frontend-lint-fix:
+	@cd frontend && yarn lint-fix
+
+frontend-format:
+	@cd frontend && yarn format
+
 lint: lint-copyright lint-go lint-markdown
 
 fix-copyright:
@@ -26,9 +35,20 @@ default: init build
 init:
 	@mkdir -p out
 
-.PHONY: build
-build:
+.PHONY: frontend-build
+frontend-build:
+	@cd frontend && yarn && yarn build
+
+.PHONY: backend-build
+backend-build:
 	@LDFLAGS=${RELEASE_LDFLAGS} scripts/gobuild.sh out/ ${BINARIES}
+
+.PHONY: assemble-release
+assemble-release:
+	@cp -r static out/
+
+.PHONY: build
+build: frontend-build backend-build assemble-release build-image
 
 .PHONY: mod-vendor
 mod-vendor:
@@ -42,6 +62,7 @@ dev:
 clean:
 	@rm -rf out
 	@rm -rf frontend/dist
+	@rm -rf static
 
 .PHONY: dist-clean
 dist-clean: clean

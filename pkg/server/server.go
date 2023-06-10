@@ -95,6 +95,8 @@ func (s *Server) handleStart(host string) error {
 
 func (s *Server) BuildRoutes() {
 	router.SetupRoutes(s.E)
+
+	s.E.Static("/", "static")
 }
 
 func (s *Server) Start() {

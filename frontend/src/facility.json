@@ -13,98 +13,572 @@
     "dst": -8
   },
   "views": [
-    { "name": "Allen AAF ATCT", "facilities": ["BIG"], "sops": "https://sops.zanartcc.org" },
-    { "name": "Anchorage ATCT", "facilities": ["ANC"], "sops": "https://sops.zanartcc.org" },
-    { "name": "Bethel ATCT", "facilities": ["BET"], "sops": "https://sops.zanartcc.org" },
-    { "name": "Eielson AFB ATCT", "facilities": ["EIL"], "sops": "https://sops.zanartcc.org" },
-    { "name": "Fairbanks ATCT", "facilities": ["FAI"], "sops": "https://sops.zanartcc.org" },
-    { "name": "Juneau ATCT", "facilities": ["JNU"], "sops": "https://sops.zanartcc.org" },
-    { "name": "Kenai ATCT", "facilities": ["ENA"], "sops": "https://sops.zanartcc.org" },
-    { "name": "King Salmon ATCT", "facilities": ["AKN"], "sops": "https://sops.zanartcc.org" },
-    { "name": "Kodiak ATCT", "facilities": ["ADQ"], "sops": "https://sops.zanartcc.org" },
-    { "name": "Ladd AAF ATCT", "facilities": ["FBK"], "sops": "https://sops.zanartcc.org" },
-    { "name": "Lake Hood ATCT", "facilities": ["LHD"], "sops": "https://sops.zanartcc.org" },
-    { "name": "Merrill Field ATCT", "facilities": ["MRI"], "sops": "https://sops.zanartcc.org" },
-    { "name": "Fairbanks TRACON", "facilities": ["FAI", "FBK", "EIL"], "sops": "https://sops.zanartcc.org" },
-    { "name": "Anchorage TRACON", "facilities": ["ANC", "LHD", "MRI", "EDF"], "sops": "https://sops.zanartcc.org" },
-    { "name": "ZAN North Area", "facilities": ["FAI", "AKN", "BET", "FBK", "EIL", "BIG"], "sops": "https://sops.zanartcc.org" },
-    { "name": "ZAN South Area", "facilities": ["ANC", "JNU", "ADQ", "ENA", "MRI", "EDF"], "sops": "https://sops.zanartcc.org" }
+    {
+      "name": "Allen AAF ATCT",
+      "facilities": [
+        "BIG"
+      ],
+      "sops": "https://sops.zanartcc.org/docs/terminal/military/"
+    },
+    {
+      "name": "Anchorage ATCT",
+      "facilities": [
+        "ANC"
+      ],
+      "sops": "https://sops.zanartcc.org/docs/terminal/panc/"
+    },
+    {
+      "name": "Bethel ATCT",
+      "facilities": [
+        "BET"
+      ],
+      "sops": "https://sops.zanartcc.org/docs/terminal/pabe/"
+    },
+    {
+      "name": "Eielson AFB ATCT",
+      "facilities": [
+        "EIL"
+      ],
+      "sops": "https://sops.zanartcc.org/docs/terminal/military/"
+    },
+    {
+      "name": "Fairbanks ATCT",
+      "facilities": [
+        "FAI"
+      ],
+      "sops": "https://sops.zanartcc.org/docs/terminal/pafa/"
+    },
+    {
+      "name": "Juneau ATCT",
+      "facilities": [
+        "JNU"
+      ],
+      "sops": "https://sops.zanartcc.org/docs/terminal/pajn/"
+    },
+    {
+      "name": "Kenai ATCT",
+      "facilities": [
+        "ENA"
+      ],
+      "sops": "https://sops.zanartcc.org/docs/terminal/paen/"
+    },
+    {
+      "name": "King Salmon ATCT",
+      "facilities": [
+        "AKN"
+      ],
+      "sops": "https://sops.zanartcc.org/docs/terminal/pakn/"
+    },
+    {
+      "name": "Kodiak ATCT",
+      "facilities": [
+        "ADQ"
+      ],
+      "sops": "https://sops.zanartcc.org/docs/terminal/padq/"
+    },
+    {
+      "name": "Ladd AAF ATCT",
+      "facilities": [
+        "FBK"
+      ],
+      "sops": "https://sops.zanartcc.org/docs/terminal/military/"
+    },
+    {
+      "name": "Lake Hood ATCT",
+      "facilities": [
+        "LHD"
+      ],
+      "sops": "https://sops.zanartcc.org/docs/terminal/panc/"
+    },
+    {
+      "name": "Merrill Field ATCT",
+      "facilities": [
+        "MRI"
+      ],
+      "sops": "https://sops.zanartcc.org/docs/terminal/pamr/"
+    },
+    {
+      "name": "Anchorage TRACON",
+      "facilities": [
+        "ANC",
+        "LHD",
+        "MRI",
+        "EDF"
+      ],
+      "sops": "https://sops.zanartcc.org/docs/approaches/a11/"
+    },
+    {
+      "name": "Fairbanks TRACON",
+      "facilities": [
+        "FAI",
+        "FBK",
+        "EIL"
+      ],
+      "sops": "https://sops.zanartcc.org/docs/approaches/fai/"
+    },
+    {
+      "name": "ZAN Consolidated",
+      "facilities": [
+        "ANC",
+        "JNU",
+        "ADQ",
+        "ENA",
+        "MRI",
+        "EDF",
+        "FAI",
+        "FBK",
+        "EIL",
+        "BIG",
+        "BET",
+        "AKN",
+        "LHD"
+      ],
+      "sops": "https://sops.zanartcc.org/docs/enroute/"
+    },
+    {
+      "name": "ZAN North Area",
+      "facilities": [
+        "FAI",
+        "AKN",
+        "BET",
+        "FBK",
+        "EIL",
+        "BIG"
+      ],
+      "sops": "https://sops.zanartcc.org/docs/enroute/"
+    },
+    {
+      "name": "ZAN South Area",
+      "facilities": [
+        "ANC",
+        "JNU",
+        "ADQ",
+        "ENA",
+        "MRI",
+        "EDF"
+      ],
+      "sops": "https://sops.zanartcc.org/docs/enroute/"
+    }
   ],
   "airports": [
-    { "name": "ANC", "hours": { "continuous": true } },
     {
-      "name": "ADQ", "hours": {
-        "continuous": false, "schedule": [
-          { "start": { "month": 4, "day": 1 }, "end": { "month": 9, "day": 30 }, "open": "07:00", "close": "22:00", "local": true },
-          { "start": { "month": 10, "day": 1 }, "end": { "month": 3, "day": 31 }, "open": "06:30", "close": "20:00", "local": true }
+      "name": "ANC",
+      "dual-atis": true,
+      "hours": {
+        "continuous": true
+      }
+    },
+    {
+      "name": "ADQ",
+      "hours": {
+        "continuous": false,
+        "schedule": [
+          {
+            "start": {
+              "month": 4,
+              "day": 1
+            },
+            "end": {
+              "month": 9,
+              "day": 30
+            },
+            "open": "07:00",
+            "close": "22:00",
+            "local": true
+          },
+          {
+            "start": {
+              "month": 10,
+              "day": 1
+            },
+            "end": {
+              "month": 3,
+              "day": 31
+            },
+            "open": "06:30",
+            "close": "20:00",
+            "local": true
+          }
         ]
       }
     },
     {
-      "name": "AKN", "hours": {
-        "continuous": false, "schedule": [
-          { "start": { "month": 8, "day": 1 }, "end": { "month": 6, "day": 14 }, "open": "08:00", "close": "20:00", "local": true },
-          { "start": { "month": 6, "day": 15 }, "end": { "month": 7, "day": 31 }, "open": "08:00", "close": "22:00", "local": true }
+      "name": "AKN",
+      "hours": {
+        "continuous": false,
+        "schedule": [
+          {
+            "start": {
+              "month": 8,
+              "day": 1
+            },
+            "end": {
+              "month": 6,
+              "day": 14
+            },
+            "open": "08:00",
+            "close": "20:00",
+            "local": true
+          },
+          {
+            "start": {
+              "month": 6,
+              "day": 15
+            },
+            "end": {
+              "month": 7,
+              "day": 31
+            },
+            "open": "08:00",
+            "close": "22:00",
+            "local": true
+          }
         ]
       }
     },
     {
-      "name": "BET", "hours": {
-        "continuous": false, "schedule": [
-          { "start": { "month": 4, "day": 1 }, "end": { "month": 10, "day": 31 }, "open": "07:00", "close": "22:00", "local": true },
-          { "start": { "month": 11, "day": 1 }, "end": { "month": 3, "day": 31 }, "open": "07:00", "close": "20:00", "local": true }
+      "name": "BET",
+      "hours": {
+        "continuous": false,
+        "schedule": [
+          {
+            "start": {
+              "month": 4,
+              "day": 1
+            },
+            "end": {
+              "month": 10,
+              "day": 31
+            },
+            "open": "07:00",
+            "close": "22:00",
+            "local": true
+          },
+          {
+            "start": {
+              "month": 11,
+              "day": 1
+            },
+            "end": {
+              "month": 3,
+              "day": 31
+            },
+            "open": "07:00",
+            "close": "20:00",
+            "local": true
+          }
         ]
       }
     },
     {
-      "name": "BIG", "hours": {
-        "continuous": false, "schedule": [
-          { "whenDST": true, "open": "16:15", "close": "00:00", "days": [1, 2, 3, 4, 5], "local": false },
-          { "whenDST": false, "open": "17:15", "close": "01:00", "days": [1, 2, 3, 4, 5], "local": false }
+      "name": "BIG",
+      "hours": {
+        "continuous": false,
+        "schedule": [
+          {
+            "whenDST": true,
+            "open": "16:15",
+            "close": "00:00",
+            "days": [
+              1,
+              2,
+              3,
+              4,
+              5
+            ],
+            "local": false
+          },
+          {
+            "whenDST": false,
+            "open": "17:15",
+            "close": "01:00",
+            "days": [
+              1,
+              2,
+              3,
+              4,
+              5
+            ],
+            "local": false
+          }
         ]
       }
     },
-    { "name": "EDF", "hours": { "continuous": true } },
     {
-      "name": "EIL", "hours": {
-        "continuous": false, "schedule": [
-          { "whenDST": true, "open": "15:00", "close": "07:00", "local": false },
-          { "whenDST": false, "open": "16:00", "close": "08:00", "local": false }
+      "name": "EDF",
+      "hours": {
+        "continuous": true
+      }
+    },
+    {
+      "name": "EIL",
+      "hours": {
+        "continuous": false,
+        "schedule": [
+          {
+            "whenDST": true,
+            "open": "15:00",
+            "close": "07:00",
+            "local": false
+          },
+          {
+            "whenDST": false,
+            "open": "16:00",
+            "close": "08:00",
+            "local": false
+          }
         ]
       }
     },
     {
-      "name": "ENA", "hours": {
-        "continuous": false, "schedule": [
-          { "start": { "month": 5, "day": 1 }, "end": { "month": 9, "day": 30 }, "open": "06:00", "close": "22:00", "local": true },
-          { "start": { "month": 10, "day": 1 }, "end": { "month": 4, "day": 30 }, "open": "07:00", "close": "21:00", "local": true }
+      "name": "ENA",
+      "hours": {
+        "continuous": false,
+        "schedule": [
+          {
+            "start": {
+              "month": 5,
+              "day": 1
+            },
+            "end": {
+              "month": 9,
+              "day": 30
+            },
+            "open": "06:00",
+            "close": "22:00",
+            "local": true
+          },
+          {
+            "start": {
+              "month": 10,
+              "day": 1
+            },
+            "end": {
+              "month": 4,
+              "day": 30
+            },
+            "open": "07:00",
+            "close": "21:00",
+            "local": true
+          }
         ]
       }
     },
-    { "name": "FAI", "hours": { "continuous": true } },
     {
-      "name": "FBK", "hours": {
-        "continuous": false, "schedule": [
-          { "whenDST": true, "open": "16:00", "close": "07:00", "local": false },
-          { "whenDST": false, "open": "17:00", "close": "08:00", "local": false }
+      "name": "FAI",
+      "hours": {
+        "continuous": true
+      }
+    },
+    {
+      "name": "FBK",
+      "hours": {
+        "continuous": false,
+        "schedule": [
+          {
+            "whenDST": true,
+            "open": "16:00",
+            "close": "07:00",
+            "local": false
+          },
+          {
+            "whenDST": false,
+            "open": "17:00",
+            "close": "08:00",
+            "local": false
+          }
         ]
       }
     },
     {
-      "name": "JNU", "hours": {
-        "continuous": false, "schedule": [
-          { "start": { "month": 4, "day": 1 }, "end": { "month": 9, "day": 30 }, "open": "06:00", "close": "23:00", "local": true },
-          { "start": { "month": 10, "day": 1 }, "end": { "month": 3, "day": 31 }, "open": "07:00", "close": "20:00", "local": true }
+      "name": "JNU",
+      "hours": {
+        "continuous": false,
+        "schedule": [
+          {
+            "start": {
+              "month": 4,
+              "day": 1
+            },
+            "end": {
+              "month": 9,
+              "day": 30
+            },
+            "open": "06:00",
+            "close": "23:00",
+            "local": true
+          },
+          {
+            "start": {
+              "month": 10,
+              "day": 1
+            },
+            "end": {
+              "month": 3,
+              "day": 31
+            },
+            "open": "07:00",
+            "close": "20:00",
+            "local": true
+          }
         ]
       }
     },
-    { "name": "LHD", "hours": { "continuous": true } },
     {
-      "name": "MRI", "hours": {
-        "continuous": false, "schedule": [
-          { "start": { "month": 1, "day": 1 }, "end": { "month": 12, "day": 31 }, "open": "07:00", "close": "22:00", "local": true }
+      "name": "LHD",
+      "hours": {
+        "continuous": true
+      }
+    },
+    {
+      "name": "MRI",
+      "hours": {
+        "continuous": false,
+        "schedule": [
+          {
+            "start": {
+              "month": 1,
+              "day": 1
+            },
+            "end": {
+              "month": 12,
+              "day": 31
+            },
+            "open": "07:00",
+            "close": "22:00",
+            "local": true
+          }
         ]
       }
     }
+  ],
+  "weather": {
+    "preduty_briefing": "https://www.weather.gov/media/zan/ZAN%20PDWB/ZAN_PDWB.mp4",
+    "required_pirep": "https://www.weather.gov/images/zme/zan_pirep.png",
+    "satelite_ir": "https://www.weather.gov/images/aawu/GOES/IR_loop.gif",
+    "satelite_vis": "https://www.weather.gov/images/aawu/GOES/VIS_loop.gif",
+    "satelite_water": "https://www.weather.gov/images/aawu/GOES/WV_loop.gif",
+    "sfc_prog": "https://www.weather.gov/images/aawu/sfc.gif",
+    "prog_1": "https://www.weather.gov/images/aawu/fcstgraphics/ifr_1.png",
+    "prog_2": "https://www.weather.gov/images/aawu/fcstgraphics/ifr_2.png",
+    "icing_1": "https://www.weather.gov/images/aawu/fcstgraphics/icing_1.png",
+    "icing_2": "https://www.weather.gov/images/aawu/fcstgraphics/icing_2.png",
+    "icing_3": "https://www.weather.gov/images/aawu/fcstgraphics/icing_3.png",
+    "icing_4": "https://www.weather.gov/images/aawu/fcstgraphics/icing_4.png",
+    "convective_1": "https://www.weather.gov/images/aawu/fcstgraphics/convective_summary.png",
+    "convective_2": "https://www.weather.gov/images/aawu/fcstgraphics/convective_1.png",
+    "convective_3": "https://www.weather.gov/images/aawu/fcstgraphics/convective_2.png",
+    "convective_4": "https://www.weather.gov/images/aawu/fcstgraphics/convective_3.png",
+    "sigwx_24": "http://www.weather.gov/images/aawu/sigWx24.gif",
+    "sigwx_36": "http://www.weather.gov/images/aawu/sigWx36.gif",
+    "sigwx_48": "http://www.weather.gov/images/aawu/sigWx48.gif",
+    "sigwx_60": "http://www.weather.gov/images/aawu/sigWx60.gif"
+  },
+  "wx_stations": [
+    "PAKW",
+    "PAHY",
+    "PAKT",
+    "PAWG",
+    "PAPG",
+    "PAFE",
+    "PASI",
+    "PAGN",
+    "PAJN",
+    "PAOH",
+    "PAGS",
+    "PAEL",
+    "PAHN",
+    "PAGY",
+    "PAYA",
+    "PACV",
+    "PAVD",
+    "PAGK",
+    "PAOR",
+    "PABI",
+    "PAEG",
+    "PAEI",
+    "PAFA",
+    "PFYU",
+    "PARC",
+    "PABA",
+    "PASC",
+    "PAQT",
+    "PATQ",
+    "PABR",
+    "PAWI",
+    "PPIZ",
+    "PAKP",
+    "PABT",
+    "PAFM",
+    "PAIK",
+    "PAOT",
+    "PFNO",
+    "PASK",
+    "PASH",
+    "PATC",
+    "PATE",
+    "PAOM",
+    "PAWM",
+    "PAGL",
+    "PFEL",
+    "PFSH",
+    "PAGA",
+    "PAHL",
+    "PAIM",
+    "PATA",
+    "PANN",
+    "PAIN",
+    "PATK",
+    "PAAQ",
+    "PANC",
+    "PAWD",
+    "PASO",
+    "PAHO",
+    "PAEN",
+    "PAMH",
+    "PAUN",
+    "PAFS",
+    "PAMC",
+    "PAHX",
+    "PANV",
+    "PASM",
+    "PAMK",
+    "PACZ",
+    "PAVA",
+    "PADM",
+    "PARS",
+    "PALG",
+    "PANI",
+    "PASL",
+    "PASV",
+    "PAKW",
+    "PAIL",
+    "PAJZ",
+    "PABE",
+    "PAOO",
+    "PAKI",
+    "PAPM",
+    "PAEH",
+    "PATG",
+    "PADL",
+    "PAKN",
+    "PAIG",
+    "PADQ",
+    "PAKH",
+    "PAPN",
+    "PAPH",
+    "PAOU",
+    "PASD",
+    "PAVC",
+    "PACD",
+    "PAKF",
+    "PADU",
+    "PADK",
+    "PASY",
+    "PAPB",
+    "PASN",
+    "PASA",
+    "PAWN",
+    "PADG"
   ]
 }

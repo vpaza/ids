@@ -18,5 +18,4 @@ clean:
 	@docker-compose down -v
 	@$(MAKE_CONTAINER) clean
 
-
-.PHONY: default shell clean serve frontend-run backend-run
+.PHONY: default shell clean serve
