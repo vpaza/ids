@@ -118,10 +118,9 @@ func (s *Server) Start() {
 
 func generateSecureMiddleware(e *echo.Echo) {
 	c := &middleware.SecureConfig{
-		XSSProtection:         "1; mode=block",
-		ContentTypeNosniff:    "nosniff",
-		XFrameOptions:         "SAMEORIGIN",
-		ContentSecurityPolicy: "default-src 'self'",
+		XSSProtection:      "1; mode=block",
+		ContentTypeNosniff: "nosniff",
+		XFrameOptions:      "SAMEORIGIN",
 	}
 
 	if config.Cfg.Server.Mode != "plain" {
