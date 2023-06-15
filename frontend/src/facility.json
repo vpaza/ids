@@ -4,7 +4,7 @@
     "color": "#002766",
     "idscolor": "#ffb612",
     "defaultView": "Anchorage ATCT",
-    "api": "https://ids-api.hawton.haus:3000",
+    "api": "https://ids.zanartcc.org",
     "update_flash_duration": 16
   },
   "timezone": {
