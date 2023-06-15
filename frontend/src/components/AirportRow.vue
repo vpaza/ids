@@ -333,11 +333,11 @@ const calcWindDir = (dir, magvar) => {
     magvar = Math.round(magvar / 10) * 10;
   }
   const new_dir = dir + magvar;
-  if (magvar < 0) {
-    dir = 360 + (dir + magvar);
+  if (new_dir < 0) {
+    new_dir = 360 + new_dir;
   }
   if (magvar > 360) {
-    dir = 360 - dir
+    new_dir = 360 - new_dir;
   }
 
   return dir + magvar;
